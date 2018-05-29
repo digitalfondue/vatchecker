@@ -1,6 +1,7 @@
 package ch.digitalfondue.vatchecker;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -12,6 +13,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,7 +32,20 @@ public class EUVatChecker {
             "</soapenv:Envelope>";
 
     private static final String ENDPOINT = "http://ec.europa.eu/taxation_customs/vies/services/checkVatService";
+    private static final XPathExpression VALID_ELEMENT_MATCHER;
+    private static final XPathExpression NAME_ELEMENT_MATCHER;
+    private static final XPathExpression ADDRESS_ELEMENT_MATCHER;
 
+    static {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        try {
+            VALID_ELEMENT_MATCHER = xPath.compile("//checkVatResponse/valid");
+            NAME_ELEMENT_MATCHER = xPath.compile("//checkVatResponse/name");
+            ADDRESS_ELEMENT_MATCHER = xPath.compile("//checkVatResponse/address");
+        } catch (XPathExpressionException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     private static String prepareTemplate(String countryCode, String vatNumber) {
         Document doc = toDocument(new StringReader(SOAP_CALL_TEMPLATE));
@@ -62,7 +77,7 @@ public class EUVatChecker {
         }
     }
 
-    static String doCheck(String countryCode, String vatNumber) {
+    public static EUVatCheckResponse doCheck(String countryCode, String vatNumber) {
         try {
             String body = prepareTemplate(countryCode, vatNumber);
             URL url = new URL(ENDPOINT);
@@ -76,9 +91,16 @@ public class EUVatChecker {
 
             try (InputStream is = conn.getInputStream(); Reader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
                 Document result = toDocument(isr);
-                return fromDocument(result);
+                Node validNode = (Node) VALID_ELEMENT_MATCHER.evaluate(result, XPathConstants.NODE);
+                if (validNode != null) {
+                    Node nameNode = (Node) NAME_ELEMENT_MATCHER.evaluate(result, XPathConstants.NODE);
+                    Node addressNode = (Node) ADDRESS_ELEMENT_MATCHER.evaluate(result, XPathConstants.NODE);
+                    return new EUVatCheckResponse("true".equals(validNode.getTextContent()), nameNode.getTextContent(), addressNode.getTextContent());
+                } else {
+                    return new EUVatCheckResponse(false, null, null);
+                }
             }
-        } catch (IOException e) {
+        } catch (IOException | XPathExpressionException e) {
             throw new IllegalStateException(e);
         }
     }
