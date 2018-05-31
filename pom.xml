@@ -1,15 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>9</version>
+  </parent>
+
   <groupId>ch.digitalfondue.vatchecker</groupId>
   <artifactId>vatchecker</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <inceptionYear>2018</inceptionYear>
+
 
   <name>vatchecker</name>
-  <url>http://www.example.com</url>
+  <url>https://github.com/digitalfondue/vatchecker</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:digitalfondue/vatchecker.git</connection>
+    <developerConnection>scm:git:git@github.com:digitalfondue/vatchecker.git</developerConnection>
+    <url>https://github.com/digitalfondue/vatchecker.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Sylvain Jermini</name>
+      <email>sylvain.jermini@syjer.com</email>
+      <organization>digitalfondue</organization>
+      <organizationUrl>http://digitalfondue.ch</organizationUrl>
+    </developer>
+  </developers>
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,6 +100,46 @@
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+          <properties>
+            <owner>digitalfondue</owner>
+            <email>info@digitalfondue.ch</email>
+          </properties>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>3.0.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.2.201409121644</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
