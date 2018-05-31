@@ -35,6 +35,28 @@ public class EUVatChecker {
     private static final XPathExpression NAME_ELEMENT_MATCHER;
     private static final XPathExpression ADDRESS_ELEMENT_MATCHER;
 
+    private final BiFunction<String, String, InputStream> documentFetcher;
+
+
+    public EUVatChecker() {
+        this.documentFetcher = EUVatChecker::doCall;
+    }
+
+    public EUVatChecker(BiFunction<String, String, InputStream> documentFetcher) {
+        this.documentFetcher = documentFetcher;
+    }
+
+    /**
+     * See {@link #doCheck(String, String)}.
+     *
+     * @param countryCode
+     * @param vatNr
+     * @return
+     */
+    public EUVatCheckResponse check(String countryCode, String vatNr) {
+        return doCheck(countryCode, vatNr, this.documentFetcher);
+    }
+
     static {
         XPath xPath = XPathFactory.newInstance().newXPath();
         try {
@@ -119,7 +141,7 @@ public class EUVatChecker {
     /**
      * Do a call to the EU vat checker web service.
      *
-     * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR.
+     * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
      * @param vatNumber the vat number to check
      * @return
      */
@@ -131,7 +153,7 @@ public class EUVatChecker {
      * See {@link #doCheck(String, String)}. This method accept a documentFetcher if you need to customize the
      * http client.
      *
-     * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR.
+     * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
      * @param vatNumber the vat number to check
      * @param documentFetcher the function that, given the url of the web service and the body to post, return the resulting body as InputStream
      * @return
