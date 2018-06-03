@@ -82,9 +82,9 @@ public class EUVatChecker {
     static {
         XPath xPath = XPathFactory.newInstance().newXPath();
         try {
-            VALID_ELEMENT_MATCHER = xPath.compile("//checkVatResponse/valid");
-            NAME_ELEMENT_MATCHER = xPath.compile("//checkVatResponse/name");
-            ADDRESS_ELEMENT_MATCHER = xPath.compile("//checkVatResponse/address");
+            VALID_ELEMENT_MATCHER = xPath.compile("//*[local-name()='checkVatResponse']/*[local-name()='valid']");
+            NAME_ELEMENT_MATCHER = xPath.compile("//*[local-name()='checkVatResponse']/*[local-name()='name']");
+            ADDRESS_ELEMENT_MATCHER = xPath.compile("//*[local-name()='checkVatResponse']/*[local-name()='address']");
 
             String soapCallTemplate = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                     "<soapenv:Header/>" +
@@ -124,6 +124,7 @@ public class EUVatChecker {
     private static Document toDocument(Reader reader) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            dbFactory.setNamespaceAware(true);
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             return dBuilder.parse(new InputSource(reader));
         } catch (ParserConfigurationException | IOException | SAXException e) {
