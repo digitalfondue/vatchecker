@@ -21,7 +21,7 @@ public class EUVatCheckResponse {
     private final String name;
     private final String address;
 
-    public EUVatCheckResponse(boolean isValid, String name, String address) {
+    EUVatCheckResponse(boolean isValid, String name, String address) {
         this.isValid = isValid;
         this.name = name;
         this.address = address;

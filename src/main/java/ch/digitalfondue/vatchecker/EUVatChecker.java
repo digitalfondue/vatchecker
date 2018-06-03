@@ -54,10 +54,16 @@ public class EUVatChecker {
     private final BiFunction<String, String, InputStream> documentFetcher;
 
 
+    /**
+     *
+     */
     public EUVatChecker() {
         this.documentFetcher = EUVatChecker::doCall;
     }
 
+    /**
+     * @param documentFetcher the function that, given the url of the web service and the body to post, return the resulting body as InputStream
+     */
     public EUVatChecker(BiFunction<String, String, InputStream> documentFetcher) {
         this.documentFetcher = documentFetcher;
     }
