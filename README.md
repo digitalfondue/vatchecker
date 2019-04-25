@@ -1,11 +1,11 @@
-# vatchecker: a basic java library for fetching VAT information from the EU webservice
+# vatchecker: a basic java library for fetching VAT information from the VIES webservice
 
 [![Maven Central](https://img.shields.io/maven-central/v/ch.digitalfondue.vatchecker/vatchecker.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22vatchecker%22)
 [![Build Status](https://travis-ci.org/digitalfondue/vatchecker.png?branch=master)](https://travis-ci.org/digitalfondue/jfiveparse)
 [![Coverage Status](https://coveralls.io/repos/digitalfondue/vatchecker/badge.svg?branch=master)](https://coveralls.io/r/digitalfondue/vatchecker?branch=master)
 
-
-A small utility for calling the VIES webservice. See http://ec.europa.eu/taxation_customs/vies/ .
+ 
+A small java client for calling the European "VAT Information Exchange System" (VIES) webservice for validating the VAT numbers. See http://ec.europa.eu/taxation_customs/vies/ .
 
 ## License
 
@@ -19,14 +19,14 @@ maven:
 <dependency>
     <groupId>ch.digitalfondue.vatchecker</groupId>
     <artifactId>vatchecker</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 
 gradle:
 
 ```
-compile 'ch.digitalfondue.vatchecker:vatchecker:1.1'
+compile 'ch.digitalfondue.vatchecker:vatchecker:1.2'
 ```
 
 ## Use
