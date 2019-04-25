@@ -20,10 +20,12 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
@@ -111,20 +113,37 @@ public class EUVatChecker {
 
     private static Document copyDocument(Document document) {
         try {
-            Transformer tx   = TransformerFactory.newInstance().newTransformer();
+            Transformer tx = getTransformer();
             DOMSource source = new DOMSource(document);
             DOMResult result = new DOMResult();
-            tx.transform(source,result);
-            return (Document)result.getNode();
+            tx.transform(source, result);
+            return (Document) result.getNode();
         } catch (TransformerException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private static Transformer getTransformer() throws TransformerConfigurationException {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        return tf.newTransformer();
     }
 
     private static Document toDocument(Reader reader) {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setNamespaceAware(true);
+
+            //
+            dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            dbFactory.setXIncludeAware(false);
+            dbFactory.setExpandEntityReferences(false);
+            //
+
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             return dBuilder.parse(new InputSource(reader));
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -135,7 +154,7 @@ public class EUVatChecker {
     private static String fromDocument(Document doc) {
         try {
             DOMSource domSource = new DOMSource(doc);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            Transformer transformer = getTransformer();
             StringWriter sw = new StringWriter();
             StreamResult sr = new StreamResult(sw);
             transformer.transform(domSource, sr);
@@ -165,7 +184,7 @@ public class EUVatChecker {
      * Do a call to the EU vat checker web service.
      *
      * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
-     * @param vatNumber the vat number to check
+     * @param vatNumber   the vat number to check
      * @return
      */
     public static EUVatCheckResponse doCheck(String countryCode, String vatNumber) {
@@ -176,8 +195,8 @@ public class EUVatChecker {
      * See {@link #doCheck(String, String)}. This method accept a documentFetcher if you need to customize the
      * http client.
      *
-     * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
-     * @param vatNumber the vat number to check
+     * @param countryCode     2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
+     * @param vatNumber       the vat number to check
      * @param documentFetcher the function that, given the url of the web service and the body to post, return the resulting body as InputStream
      * @return
      */
