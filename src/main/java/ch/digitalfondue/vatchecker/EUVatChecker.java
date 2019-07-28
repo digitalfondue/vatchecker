@@ -134,20 +134,25 @@ public class EUVatChecker {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setNamespaceAware(true);
-
             //
-            dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            setFeature(dbFactory, "http://apache.org/xml/features/disallow-doctype-decl", true);
+            setFeature(dbFactory,"http://xml.org/sax/features/external-general-entities", false);
+            setFeature(dbFactory,"http://xml.org/sax/features/external-parameter-entities", false);
+            setFeature(dbFactory,"http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             dbFactory.setXIncludeAware(false);
             dbFactory.setExpandEntityReferences(false);
             //
-
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             return dBuilder.parse(new InputSource(reader));
         } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private static void setFeature(DocumentBuilderFactory dbFactory, String feature, boolean value) {
+        try {
+            dbFactory.setFeature(feature, value);
+        } catch (ParserConfigurationException e) {
         }
     }
 
