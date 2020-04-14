@@ -10,7 +10,7 @@
 
   <groupId>ch.digitalfondue.vatchecker</groupId>
   <artifactId>vatchecker</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4</version>
   <packaging>jar</packaging>
   <inceptionYear>2018</inceptionYear>
 
