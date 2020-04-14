@@ -73,9 +73,9 @@ public class EUVatChecker {
     /**
      * See {@link #doCheck(String, String)}.
      *
-     * @param countryCode
-     * @param vatNr
-     * @return
+     * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
+     * @param vatNr vat number
+     * @return the response, see {@link EUVatCheckResponse}
      */
     public EUVatCheckResponse check(String countryCode, String vatNr) {
         return doCheck(countryCode, vatNr, this.documentFetcher);
@@ -190,7 +190,7 @@ public class EUVatChecker {
      *
      * @param countryCode 2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
      * @param vatNumber   the vat number to check
-     * @return
+     * @return the response, see {@link EUVatCheckResponse}
      */
     public static EUVatCheckResponse doCheck(String countryCode, String vatNumber) {
         return doCheck(countryCode, vatNumber, EUVatChecker::doCall);
@@ -203,7 +203,7 @@ public class EUVatChecker {
      * @param countryCode     2 character ISO country code. Note: Greece is EL, not GR. See http://ec.europa.eu/taxation_customs/vies/faq.html#item_11
      * @param vatNumber       the vat number to check
      * @param documentFetcher the function that, given the url of the web service and the body to post, return the resulting body as InputStream
-     * @return
+     * @return the response, see {@link EUVatCheckResponse}
      */
     public static EUVatCheckResponse doCheck(String countryCode, String vatNumber, BiFunction<String, String, InputStream> documentFetcher) {
         Objects.requireNonNull(countryCode, "countryCode cannot be null");
