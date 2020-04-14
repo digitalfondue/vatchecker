@@ -40,7 +40,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 /**
- * A small utility for calling the VIES webservice. See http://ec.europa.eu/taxation_customs/vies/ .
+ * A small utility for calling the VIES webservice. See https://ec.europa.eu/taxation_customs/vies/ .
  *
  * The main entry points are {@link #doCheck(String, String)} and if more customization is needed {@link #doCheck(String, String, BiFunction)}.
  */
@@ -48,7 +48,7 @@ public class EUVatChecker {
 
     private static final Document BASE_DOCUMENT_TEMPLATE;
 
-    private static final String ENDPOINT = "http://ec.europa.eu/taxation_customs/vies/services/checkVatService";
+    private static final String ENDPOINT = "https://ec.europa.eu/taxation_customs/vies/services/checkVatService";
     private static final XPathExpression VALID_ELEMENT_MATCHER;
     private static final XPathExpression NAME_ELEMENT_MATCHER;
     private static final XPathExpression ADDRESS_ELEMENT_MATCHER;
@@ -60,7 +60,7 @@ public class EUVatChecker {
      *
      */
     public EUVatChecker() {
-        this.documentFetcher = EUVatChecker::doCall;
+        this(EUVatChecker::doCall);
     }
 
     /**
