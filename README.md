@@ -1,7 +1,7 @@
 # vatchecker: a basic java library for fetching VAT information from the VIES webservice
 
 [![Maven Central](https://img.shields.io/maven-central/v/ch.digitalfondue.vatchecker/vatchecker.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22vatchecker%22)
-[![Build Status](https://travis-ci.org/digitalfondue/vatchecker.png?branch=master)](https://travis-ci.org/digitalfondue/jfiveparse)
+[![Build Status](https://travis-ci.org/digitalfondue/vatchecker.png?branch=master)](https://travis-ci.org/digitalfondue/vatchecker)
 [![Coverage Status](https://coveralls.io/repos/digitalfondue/vatchecker/badge.svg?branch=master)](https://coveralls.io/r/digitalfondue/vatchecker?branch=master)
 
  
