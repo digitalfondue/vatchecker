@@ -19,14 +19,14 @@ maven:
 <dependency>
     <groupId>ch.digitalfondue.vatchecker</groupId>
     <artifactId>vatchecker</artifactId>
-    <version>1.2</version>
+    <version>1.4</version>
 </dependency>
 ```
 
 gradle:
 
 ```
-compile 'ch.digitalfondue.vatchecker:vatchecker:1.2'
+compile 'ch.digitalfondue.vatchecker:vatchecker:1.4'
 ```
 
 ## Use
