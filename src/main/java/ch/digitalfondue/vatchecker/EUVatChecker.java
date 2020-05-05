@@ -125,12 +125,13 @@ public class EUVatChecker {
 
     private static Transformer getTransformer() throws TransformerConfigurationException {
         TransformerFactory tf = TransformerFactory.newInstance();
+        setAttribute(tf, XMLConstants.FEATURE_SECURE_PROCESSING, true);
         setAttribute(tf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
         setAttribute(tf, XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         return tf.newTransformer();
     }
 
-    private static void setAttribute(TransformerFactory tf, String key, String value) {
+    private static void setAttribute(TransformerFactory tf, String key, Object value) {
         try {
             tf.setAttribute(key, value);
         } catch (IllegalArgumentException e) {
