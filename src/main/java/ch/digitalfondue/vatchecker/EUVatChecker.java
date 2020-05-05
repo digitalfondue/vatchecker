@@ -125,9 +125,17 @@ public class EUVatChecker {
 
     private static Transformer getTransformer() throws TransformerConfigurationException {
         TransformerFactory tf = TransformerFactory.newInstance();
-        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        setAttribute(tf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        setAttribute(tf, XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         return tf.newTransformer();
+    }
+
+    private static void setAttribute(TransformerFactory tf, String key, String value) {
+        try {
+            tf.setAttribute(key, value);
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
     }
 
     private static Document toDocument(Reader reader) {
@@ -153,6 +161,7 @@ public class EUVatChecker {
         try {
             dbFactory.setFeature(feature, value);
         } catch (ParserConfigurationException e) {
+            // ignore
         }
     }
 
@@ -177,8 +186,10 @@ public class EUVatChecker {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
             conn.setDoOutput(true);
-            conn.getOutputStream().write(document.getBytes(StandardCharsets.UTF_8));
-            conn.getOutputStream().flush();
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(document.getBytes(StandardCharsets.UTF_8));
+                os.flush();
+            }
             return conn.getInputStream();
         } catch (IOException e) {
             throw new IllegalStateException(e);
