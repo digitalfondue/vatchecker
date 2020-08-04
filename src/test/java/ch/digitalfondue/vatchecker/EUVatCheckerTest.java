@@ -27,6 +27,8 @@ public class EUVatCheckerTest {
         Assert.assertEquals(true, resp.isValid());
         Assert.assertEquals("BANCA D'ITALIA", resp.getName());
         Assert.assertEquals("VIA NAZIONALE 91 \n00184 ROMA RM\n", resp.getAddress());
+        Assert.assertEquals(false, resp.isError());
+        Assert.assertNull(resp.getFault());
     }
 
     @Test
@@ -35,6 +37,20 @@ public class EUVatCheckerTest {
         Assert.assertEquals(false, resp.isValid());
         Assert.assertEquals("---", resp.getName());
         Assert.assertEquals("---", resp.getAddress());
+        Assert.assertEquals(false, resp.isError());
+        Assert.assertNull(resp.getFault());
+    }
+
+    @Test
+    public void testInvalidVATFormatSoapFault() {
+        EUVatCheckResponse resp = EUVatChecker.doCheck("IT", "");
+        Assert.assertEquals(false, resp.isValid());
+        Assert.assertEquals(null, resp.getName());
+        Assert.assertEquals(null, resp.getAddress());
+        Assert.assertTrue(resp.isError());
+        Assert.assertEquals(EUVatCheckResponse.FaultType.INVALID_INPUT, resp.getFault().getFaultType());
+        Assert.assertEquals("INVALID_INPUT", resp.getFault().getFault());
+        Assert.assertEquals("soap:Server", resp.getFault().getFaultCode());
     }
 
     @Test
@@ -43,6 +59,10 @@ public class EUVatCheckerTest {
         Assert.assertEquals(false, resp.isValid());
         Assert.assertEquals(null, resp.getName());
         Assert.assertEquals(null, resp.getAddress());
+        Assert.assertTrue(resp.isError());
+        Assert.assertEquals(EUVatCheckResponse.FaultType.INVALID_INPUT, resp.getFault().getFaultType());
+        Assert.assertEquals("INVALID_INPUT", resp.getFault().getFault());
+        Assert.assertEquals("soap:Server", resp.getFault().getFaultCode());
     }
 
     @Test
@@ -52,5 +72,7 @@ public class EUVatCheckerTest {
         Assert.assertEquals(true, resp.isValid());
         Assert.assertEquals("BANCA D'ITALIA", resp.getName());
         Assert.assertEquals("VIA NAZIONALE 91 \n00184 ROMA RM\n", resp.getAddress());
+        Assert.assertEquals(false, resp.isError());
+        Assert.assertNull(resp.getFault());
     }
 }

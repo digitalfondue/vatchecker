@@ -52,6 +52,9 @@ public class EUVatChecker {
     private static final XPathExpression VALID_ELEMENT_MATCHER;
     private static final XPathExpression NAME_ELEMENT_MATCHER;
     private static final XPathExpression ADDRESS_ELEMENT_MATCHER;
+    private static final XPathExpression SOAP_FAULT_MATCHER;
+    private static final XPathExpression SOAP_FAULT_CODE_MATCHER;
+    private static final XPathExpression SOAP_FAULT_STRING_MATCHER;
 
     private final BiFunction<String, String, InputStream> documentFetcher;
 
@@ -87,6 +90,10 @@ public class EUVatChecker {
             VALID_ELEMENT_MATCHER = xPath.compile("//*[local-name()='checkVatResponse']/*[local-name()='valid']");
             NAME_ELEMENT_MATCHER = xPath.compile("//*[local-name()='checkVatResponse']/*[local-name()='name']");
             ADDRESS_ELEMENT_MATCHER = xPath.compile("//*[local-name()='checkVatResponse']/*[local-name()='address']");
+
+            SOAP_FAULT_MATCHER = xPath.compile("//*[local-name()='Fault']");
+            SOAP_FAULT_CODE_MATCHER = xPath.compile("//*[local-name()='Fault']/*[local-name()='faultcode']");
+            SOAP_FAULT_STRING_MATCHER = xPath.compile("//*[local-name()='Fault']/*[local-name()='faultstring']");
 
             String soapCallTemplate = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                     "<soapenv:Header/>" +
@@ -225,12 +232,17 @@ public class EUVatChecker {
             try (InputStream is = documentFetcher.apply(ENDPOINT, body); Reader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
                 Document result = toDocument(isr);
                 Node validNode = (Node) VALID_ELEMENT_MATCHER.evaluate(result, XPathConstants.NODE);
+                Node faultNode = (Node) SOAP_FAULT_MATCHER.evaluate(result, XPathConstants.NODE);
                 if (validNode != null) {
                     Node nameNode = (Node) NAME_ELEMENT_MATCHER.evaluate(result, XPathConstants.NODE);
                     Node addressNode = (Node) ADDRESS_ELEMENT_MATCHER.evaluate(result, XPathConstants.NODE);
-                    return new EUVatCheckResponse("true".equals(textNode(validNode)), textNode(nameNode), textNode(addressNode));
+                    return new EUVatCheckResponse("true".equals(textNode(validNode)), textNode(nameNode), textNode(addressNode), false, null);
+                } else if (faultNode != null) {
+                    Node faultCode = (Node) SOAP_FAULT_CODE_MATCHER.evaluate(result, XPathConstants.NODE);
+                    Node faultString = (Node) SOAP_FAULT_STRING_MATCHER.evaluate(result, XPathConstants.NODE);
+                    return new EUVatCheckResponse(false, null, null, true, new EUVatCheckResponse.Fault(textNode(faultCode), textNode(faultString)));
                 } else {
-                    return new EUVatCheckResponse(false, null, null);
+                    return new EUVatCheckResponse(false, null, null, false, null); // should not enter here in theory
                 }
             }
         } catch (IOException | XPathExpressionException e) {
