@@ -19,14 +19,14 @@ maven:
 <dependency>
     <groupId>ch.digitalfondue.vatchecker</groupId>
     <artifactId>vatchecker</artifactId>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
 </dependency>
 ```
 
 gradle:
 
 ```
-compile 'ch.digitalfondue.vatchecker:vatchecker:1.4.2'
+compile 'ch.digitalfondue.vatchecker:vatchecker:1.4.3'
 ```
 
 ## Use
@@ -49,6 +49,10 @@ Assert.assertEquals(true, resp.isValid());
 Assert.assertEquals("BANCA D'ITALIA", resp.getName());
 Assert.assertEquals("VIA NAZIONALE 91 \n00184 ROMA RM\n", resp.getAddress());
 ```
+
+For error handling, see the tests, you may distinguish "invalid" and "error" which can have a Fault object:
+
+ - https://github.com/digitalfondue/vatchecker/blob/master/src/test/java/ch/digitalfondue/vatchecker/EUVatCheckerTest.java
 
 You can use your own data fetcher if customization is needed, see:
 
