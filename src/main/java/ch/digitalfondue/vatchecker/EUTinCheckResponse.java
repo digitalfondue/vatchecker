@@ -16,33 +16,27 @@
  */
 package ch.digitalfondue.vatchecker;
 
-public class EUVatCheckResponse {
+public class EUTinCheckResponse {
 
-    private final boolean isValid;
-    private final String name;
-    private final String address;
+    private final boolean validSyntax;
+    private final boolean validStructure;
 
     private final boolean error;
     private final Fault fault;
 
-    EUVatCheckResponse(boolean isValid, String name, String address, boolean error, Fault fault) {
-        this.isValid = isValid;
-        this.name = name;
-        this.address = address;
+    EUTinCheckResponse(boolean validSyntax, boolean validStructure, boolean error, Fault fault) {
+        this.validSyntax = validSyntax;
+        this.validStructure = validStructure;
         this.error = error;
         this.fault = fault;
     }
 
-    public boolean isValid() {
-        return isValid;
+    public boolean isValidSyntax() {
+        return validSyntax;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
+    public boolean isValidStructure() {
+        return validStructure;
     }
 
     public boolean isError() {
@@ -59,13 +53,12 @@ public class EUVatCheckResponse {
         }
     }
 
+
     public enum FaultType {
         INVALID_INPUT,
-        GLOBAL_MAX_CONCURRENT_REQ,
-        MS_MAX_CONCURRENT_REQ,
+        NO_INFORMATION,
         SERVICE_UNAVAILABLE,
-        MS_UNAVAILABLE,
-        TIMEOUT,
+        SERVER_BUSY,
         OTHER
     }
 }

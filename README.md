@@ -1,10 +1,12 @@
-# vatchecker: a basic java library for fetching VAT information from the VIES webservice
+# vatchecker: a basic java library for fetching VAT information from the VIES webservice and TIN webservice
 
 [![Maven Central](https://img.shields.io/maven-central/v/ch.digitalfondue.vatchecker/vatchecker.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22vatchecker%22)
 [![Build Status](https://img.shields.io/github/workflow/status/digitalfondue/vatchecker/Java%20CI%20with%20Maven)](https://github.com/digitalfondue/vatchecker/actions?query=workflow%3A%22Java+CI+with+Maven%22)
 
  
-A small java client for calling the European "VAT Information Exchange System" (VIES) webservice for validating the VAT numbers. See http://ec.europa.eu/taxation_customs/vies/ .
+A small java client for calling 
+ - the European "VAT Information Exchange System" (VIES) webservice for validating the VAT numbers. See http://ec.europa.eu/taxation_customs/vies/ .
+ - the European "TIN" webservice. See https://ec.europa.eu/taxation_customs/tin/ .
 
 ## License
 
@@ -30,6 +32,7 @@ compile 'ch.digitalfondue.vatchecker:vatchecker:1.4.3'
 
 ## Use
 
+### VIES
 As a static method:
 
 ```java
@@ -57,3 +60,17 @@ You can use your own data fetcher if customization is needed, see:
 
  - https://github.com/digitalfondue/vatchecker/blob/master/src/main/java/ch/digitalfondue/vatchecker/EUVatChecker.java#L183
  - https://github.com/digitalfondue/vatchecker/blob/master/src/main/java/ch/digitalfondue/vatchecker/EUVatChecker.java#L67
+
+### TIN
+
+As a static method:
+
+```java
+EUTinCheckResponse resp = EUTinChecker.doCheck("BE", "00012511119");
+Assert.assertEquals(true, resp.isValidStructure());
+Assert.assertEquals(true, resp.isValidSyntax());
+```
+
+Like the VIES counterpart, you can see the tests for all the possibile outputs:
+
+ - https://github.com/digitalfondue/vatchecker/blob/master/src/test/java/ch/digitalfondue/vatchecker/EUTinCheckerTest.java

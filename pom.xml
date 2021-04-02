@@ -117,9 +117,9 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>3.0</version>
+        <version>4.0</version>
         <configuration>
-          <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+          <header>template/APACHE-2.txt</header>
           <includes>
             <include>**/*.java</include>
           </includes>
@@ -135,6 +135,14 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin-git</artifactId>
+            <!-- make sure you use the same version as license-maven-plugin -->
+            <version>4.0</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
