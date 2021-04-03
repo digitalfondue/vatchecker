@@ -32,22 +32,21 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 class Utils {
 
-    static final XPathExpression SOAP_FAULT_MATCHER;
-    static final XPathExpression SOAP_FAULT_CODE_MATCHER;
-    static final XPathExpression SOAP_FAULT_STRING_MATCHER;
+    private static final XPathExpression SOAP_FAULT_MATCHER;
+    private static final XPathExpression SOAP_FAULT_CODE_MATCHER;
+    private static final XPathExpression SOAP_FAULT_STRING_MATCHER;
 
     static {
         XPath xPath = XPathFactory.newInstance().newXPath();
@@ -60,7 +59,7 @@ class Utils {
         }
     }
 
-    static Document copyDocument(Document document) {
+    private static Document copyDocument(Document document) {
         try {
             Transformer tx = getTransformer();
             DOMSource source = new DOMSource(document);
@@ -115,7 +114,7 @@ class Utils {
         }
     }
 
-    static String fromDocument(Document doc) {
+    private static String fromDocument(Document doc) {
         try {
             DOMSource domSource = new DOMSource(doc);
             Transformer transformer = getTransformer();
@@ -127,7 +126,6 @@ class Utils {
             throw new IllegalStateException(e);
         }
     }
-
 
     static InputStream doCall(String endpointUrl, String document) {
         try {
@@ -146,23 +144,53 @@ class Utils {
         }
     }
 
-    static String prepareTemplate(Document document, Map<String, String> data) {
-        Document doc = Utils.copyDocument(document);
-        data.forEach((tagName, value) -> {
-            doc.getElementsByTagName(tagName).item(0).setTextContent(value);
-        });
-        return Utils.fromDocument(doc);
+    private static String prepareTemplate(Document document, Map<String, String> data) {
+        Document doc = copyDocument(document);
+        for (Map.Entry<String, String> kv : data.entrySet()) {
+            doc.getElementsByTagName(kv.getKey()).item(0).setTextContent(kv.getValue());
+        }
+        return fromDocument(doc);
     }
 
     static final String textNode(Node node) {
         return node != null ? node.getTextContent() : null;
     }
 
-    static <T extends Enum<T>> T tryParse(String fault, Function<String, T> converter, T defaultValue) {
-        try {
-            return converter.apply(fault);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            return defaultValue;
+    static class ExtractionResult {
+        final Node validNode;
+        final Node faultNode;
+        final List<String> extracted;
+
+        ExtractionResult(Node validNode, Node faultNode, List<String> extracted) {
+            this.validNode = validNode;
+            this.faultNode = faultNode;
+            this.extracted = extracted;
+        }
+    }
+
+    static ExtractionResult doCallAndExtract(Document document,
+                                  Map<String, String> params,
+                                  String endpointUrl,
+                                  BiFunction<String, String, InputStream> documentFetcher,
+                                  XPathExpression validElementMatcher,
+                                  XPathExpression[] validElementExtractors) {
+        String body = Utils.prepareTemplate(document, params);
+        try (InputStream is = documentFetcher.apply(endpointUrl, body); Reader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+            Document result = Utils.toDocument(isr);
+            Node validNode = (Node) validElementMatcher.evaluate(result, XPathConstants.NODE);
+            Node faultNode = (Node) SOAP_FAULT_MATCHER.evaluate(result, XPathConstants.NODE);
+            List<String> extracted = new ArrayList<>(validElementExtractors.length);
+            if (validNode != null) {
+                for (XPathExpression exp : validElementExtractors) {
+                    extracted.add(textNode((Node) exp.evaluate(result, XPathConstants.NODE)));
+                }
+            } else if (faultNode != null) {
+                extracted.add(textNode((Node) Utils.SOAP_FAULT_CODE_MATCHER.evaluate(result, XPathConstants.NODE)));
+                extracted.add(textNode((Node) Utils.SOAP_FAULT_STRING_MATCHER.evaluate(result, XPathConstants.NODE)));
+            }
+            return new ExtractionResult(validNode, faultNode, extracted);
+        } catch (IOException | XPathExpressionException e) {
+            throw new IllegalStateException(e);
         }
     }
 }

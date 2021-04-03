@@ -53,7 +53,6 @@ public class EUTinCheckResponse {
         }
     }
 
-
     public enum FaultType {
         INVALID_INPUT,
         NO_INFORMATION,

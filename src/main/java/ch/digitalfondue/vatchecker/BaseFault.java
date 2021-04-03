@@ -27,7 +27,7 @@ abstract class BaseFault<T extends Enum<T>> {
     protected BaseFault(String faultCode, String fault, Function<String, T> converter, T defaultValue) {
         this.faultCode = faultCode;
         this.fault = fault;
-        this.faultType = Utils.tryParse(fault, converter, defaultValue);
+        this.faultType = tryParse(fault, converter, defaultValue);
     }
 
     public String getFault() {
@@ -40,5 +40,13 @@ abstract class BaseFault<T extends Enum<T>> {
 
     public T getFaultType() {
         return faultType;
+    }
+
+    private static <T extends Enum<T>> T tryParse(String fault, Function<String, T> converter, T defaultValue) {
+        try {
+            return converter.apply(fault);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return defaultValue;
+        }
     }
 }

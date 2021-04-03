@@ -1,10 +1,9 @@
-# vatchecker: a basic java library for fetching VAT information from the VIES webservice and TIN webservice
+# vatchecker: a java library for fetching information from the VIES and TIN webservice
 
 [![Maven Central](https://img.shields.io/maven-central/v/ch.digitalfondue.vatchecker/vatchecker.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22vatchecker%22)
 [![Build Status](https://img.shields.io/github/workflow/status/digitalfondue/vatchecker/Java%20CI%20with%20Maven)](https://github.com/digitalfondue/vatchecker/actions?query=workflow%3A%22Java+CI+with+Maven%22)
-
  
-A small java client for calling 
+A small java client with 0 dependencies for calling:
  - the European "VAT Information Exchange System" (VIES) webservice for validating the VAT numbers. See http://ec.europa.eu/taxation_customs/vies/ .
  - the European "TIN" webservice. See https://ec.europa.eu/taxation_customs/tin/ .
 
