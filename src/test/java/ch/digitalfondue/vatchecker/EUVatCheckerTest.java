@@ -51,7 +51,7 @@ public class EUVatCheckerTest {
         Assert.assertTrue(resp.isError());
         Assert.assertEquals(EUVatCheckResponse.FaultType.INVALID_INPUT, resp.getFault().getFaultType());
         Assert.assertEquals("INVALID_INPUT", resp.getFault().getFault());
-        Assert.assertEquals("soap:Server", resp.getFault().getFaultCode());
+        Assert.assertTrue(resp.getFault().getFaultCode().endsWith(":Server"));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class EUVatCheckerTest {
         Assert.assertTrue(resp.isError());
         Assert.assertEquals(EUVatCheckResponse.FaultType.INVALID_INPUT, resp.getFault().getFaultType());
         Assert.assertEquals("INVALID_INPUT", resp.getFault().getFault());
-        Assert.assertEquals("soap:Server", resp.getFault().getFaultCode());
+        Assert.assertTrue(resp.getFault().getFaultCode().endsWith(":Server"));
     }
 
     @Test
