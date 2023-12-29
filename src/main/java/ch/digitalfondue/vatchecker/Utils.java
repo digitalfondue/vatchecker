@@ -152,7 +152,7 @@ class Utils {
         return fromDocument(doc);
     }
 
-    static final String textNode(Node node) {
+    private static String textNode(Node node) {
         return node != null ? node.getTextContent() : null;
     }
 
