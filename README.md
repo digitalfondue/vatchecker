@@ -19,17 +19,20 @@ maven:
 <dependency>
     <groupId>ch.digitalfondue.vatchecker</groupId>
     <artifactId>vatchecker</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
 </dependency>
 ```
 
 gradle:
 
 ```
-compile 'ch.digitalfondue.vatchecker:vatchecker:1.5.0'
+compile 'ch.digitalfondue.vatchecker:vatchecker:1.6.0'
 ```
 
 ## Use
+
+If you use it as a module, remember to add `requires ch.digitalfondue.vatchecker;` in your module-info.
+
 
 ### VIES
 As a static method:
