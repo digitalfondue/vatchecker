@@ -10,6 +10,10 @@
   <version>1.6.0</version>
   <packaging>jar</packaging>
   <inceptionYear>2018</inceptionYear>
+  <description>vatchecker, a small java client with 0 dependencies for calling:
+    the European "VAT Information Exchange System" (VIES) webservice for validating the VAT numbers.
+    the European "TIN" webservice.
+  </description>
 
 
   <name>vatchecker</name>
