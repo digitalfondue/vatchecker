@@ -1,6 +1,5 @@
 /*
- *
- * Copyright © 2018-2021 digitalfondue (info@digitalfondue.ch)
+ * Copyright © 2018-2024 digitalfondue (info@digitalfondue.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
