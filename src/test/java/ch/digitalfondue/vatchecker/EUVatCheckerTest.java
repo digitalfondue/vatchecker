@@ -33,7 +33,7 @@ public class EUVatCheckerTest {
 
     @Test
     public void testCorrectCountryCodeButInvalidVAT() {
-        EUVatCheckResponse resp = EUVatChecker.doCheck("NL", "85187947B01");
+        EUVatCheckResponse resp = EUVatChecker.doCheck("IT", "00950501000");
         Assert.assertEquals(false, resp.isValid());
         Assert.assertEquals("---", resp.getName());
         Assert.assertEquals("---", resp.getAddress());
