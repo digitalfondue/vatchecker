@@ -176,6 +176,7 @@ class Utils {
         String body = Utils.prepareTemplate(document, params);
         try (InputStream is = documentFetcher.apply(endpointUrl, body); Reader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             Document result = Utils.toDocument(isr);
+
             Node validNode = (Node) validElementMatcher.evaluate(result, XPathConstants.NODE);
             Node faultNode = (Node) SOAP_FAULT_MATCHER.evaluate(result, XPathConstants.NODE);
             List<String> extracted = new ArrayList<>(validElementExtractors.length);
